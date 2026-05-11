@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import { prisma } from '../db.js';
 import { authenticate } from '../middleware/auth.js';
 import { runSimplification } from '../services/simplify.service.js';
-import { cacheSettlement, getCachedSettlement } from '../services/redis.service.js';
+import { cacheSettlement, getCachedSettlement, invalidateSettlement } from '../services/redis.service.js';
 import { publishPaymentNotification } from '../services/rabbitmq.service.js';
 
 // CONCEPT: Settlement & Payment Routes
@@ -75,6 +75,19 @@ settlementsRouter.get('/:groupId/settlement', async (req: Request, res: Response
         });
       }
     }
+  }
+
+  // Subtract payments already made
+  const payments = await prisma.payment.findMany({
+    where: { groupId },
+  });
+
+  for (const payment of payments) {
+    debts.push({
+      fromUserId: payment.toUserId,
+      toUserId: payment.fromUserId,
+      amount: payment.amount,
+    });
   }
 
   if (debts.length === 0) {
@@ -198,6 +211,13 @@ settlementsRouter.post('/:groupId/payments', async (req: Request, res: Response)
   }
 
   res.status(201).json({ payment });
+
+  // Invalidate cached settlement so next fetch recomputes
+  try {
+    await invalidateSettlement(groupId);
+  } catch {
+    // Redis down — will recompute on next request anyway
+  }
 });
 
 // POST /groups/:groupId/payments/:paymentId/confirm — Confirm a received payment

@@ -205,6 +205,16 @@ expensesRouter.get('/:groupId/balances', async (req: Request, res: Response): Pr
     }
   }
 
+  // Account for payments: payer's balance goes DOWN, receiver's goes UP
+  const payments = await prisma.payment.findMany({
+    where: { groupId },
+  });
+
+  for (const payment of payments) {
+    balanceMap.set(payment.fromUserId, (balanceMap.get(payment.fromUserId) ?? 0) + payment.amount);
+    balanceMap.set(payment.toUserId, (balanceMap.get(payment.toUserId) ?? 0) - payment.amount);
+  }
+
   // Build response with user info
   const balances = members.map((m) => ({
     user: m.user,

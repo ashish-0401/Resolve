@@ -9,6 +9,7 @@ import cors from 'cors';
 import { authRouter } from './routes/auth.js';
 import { groupsRouter } from './routes/groups.js';
 import { expensesRouter } from './routes/expenses.js';
+import { settlementsRouter } from './routes/settlements.js';
 
 // CONCEPT: Express Application Setup
 // This is the entry point for the entire backend. It:
@@ -47,6 +48,7 @@ app.use(cors({
 app.use('/auth', authRouter);
 app.use('/groups', groupsRouter);
 app.use('/groups', expensesRouter);
+app.use('/groups', settlementsRouter);
 
 // Health check endpoint (useful for deployment platforms)
 app.get('/health', (_req, res) => {

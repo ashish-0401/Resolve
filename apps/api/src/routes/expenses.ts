@@ -3,6 +3,7 @@ import { prisma } from '../db.js';
 import { authenticate } from '../middleware/auth.js';
 import { createExpenseSchema } from '../validation.js';
 import { syncDebtsToNeo4j, ensureUserNode, ensureGroupNode } from '../services/neo4j.service.js';
+import { invalidateSettlement } from '../services/redis.service.js';
 
 // CONCEPT: Expense Routes with Pessimistic Locking
 // The core of RESOLVE — adding expenses to a group.
@@ -118,6 +119,13 @@ expensesRouter.post('/:groupId/expenses', async (req: Request, res: Response): P
     // Log but don't fail the request — the expense was saved successfully.
     // Neo4j sync can be retried or will self-correct on next expense.
     console.error('Neo4j sync failed (expense was saved):', err);
+  }
+
+  // Invalidate cached settlement plan — balances have changed
+  try {
+    await invalidateSettlement(groupId);
+  } catch {
+    // Redis down — proceed without invalidation
   }
 
   res.status(201).json({ expense });

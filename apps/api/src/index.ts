@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { authRouter } from './routes/auth.js';
 import { groupsRouter } from './routes/groups.js';
+import { expensesRouter } from './routes/expenses.js';
 
 // CONCEPT: Express Application Setup
 // This is the entry point for the entire backend. It:
@@ -45,6 +46,7 @@ app.use(cors({
 // --- Routes ---
 app.use('/auth', authRouter);
 app.use('/groups', groupsRouter);
+app.use('/groups', expensesRouter);
 
 // Health check endpoint (useful for deployment platforms)
 app.get('/health', (_req, res) => {

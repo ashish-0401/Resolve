@@ -14,6 +14,7 @@ interface SettleTabProps {
 
 export function SettleTab({ transfers, groupId, currentUserId, onPayment }: SettleTabProps) {
   const [paying, setPaying] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [proofs, setProofs] = useState<Record<string, string>>({});
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -44,11 +45,12 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
   const handlePay = async (transfer: Transfer) => {
     const key = `${transfer.from.id}-${transfer.to.id}`;
     setPaying(key);
+    setError(null);
     try {
       await api.createPayment(groupId, transfer.to.id, transfer.amount, proofs[key]);
       onPayment();
-    } catch {
-      // handle error
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Payment failed');
     } finally {
       setPaying(null);
     }
@@ -143,6 +145,12 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
           </GlowCard>
         );
       })}
+
+      {error && (
+        <div className="text-center text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+          {error}
+        </div>
+      )}
 
       <p className="text-center text-xs text-zinc-600 mt-2">
         Attach a UPI screenshot so others can verify the payment 📎

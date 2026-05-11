@@ -30,8 +30,8 @@ const app = express();
 
 // --- Global Middleware ---
 
-// Parse JSON request bodies (max 10kb to prevent abuse)
-app.use(express.json({ limit: '10kb' }));
+// Parse JSON request bodies (max 10mb to allow payment proof images)
+app.use(express.json({ limit: '10mb' }));
 
 // Parse cookies so we can read the JWT from httpOnly cookie
 app.use(cookieParser());

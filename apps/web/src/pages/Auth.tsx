@@ -25,15 +25,15 @@ export function LoginPage() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: '80px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 800 }}>RESOLVE</h1>
-        <p style={{ color: 'var(--text-muted)', marginTop: '4px', fontSize: '14px' }}>
+    <div className="container" style={{ paddingTop: '100px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: 800, background: 'linear-gradient(135deg, #a78bfa, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>RESOLVE</h1>
+        <p style={{ color: 'var(--text-dim)', marginTop: '8px', fontSize: '14px' }}>
           Split expenses, settle debts
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form onSubmit={handleSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '18px', padding: '24px' }}>
         <div>
           <label className="label">Email</label>
           <input
@@ -97,14 +97,14 @@ export function RegisterPage() {
 
   return (
     <div className="container" style={{ paddingTop: '80px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 800 }}>RESOLVE</h1>
-        <p style={{ color: 'var(--text-muted)', marginTop: '4px', fontSize: '14px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: 800, background: 'linear-gradient(135deg, #a78bfa, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>RESOLVE</h1>
+        <p style={{ color: 'var(--text-dim)', marginTop: '8px', fontSize: '14px' }}>
           Create your account
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <form onSubmit={handleSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '18px', padding: '24px' }}>
         <div>
           <label className="label">First Name</label>
           <input

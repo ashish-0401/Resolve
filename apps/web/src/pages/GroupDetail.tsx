@@ -66,15 +66,27 @@ export function GroupDetailPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
             onClick={() => navigate('/')}
-            style={{ background: 'none', color: 'var(--text-muted)', fontSize: '18px', padding: '4px' }}
+            style={{
+              background: 'var(--bg-elevated)',
+              color: 'var(--text-muted)',
+              fontSize: '14px',
+              padding: '8px 10px',
+              borderRadius: '10px',
+              border: '1px solid var(--border)',
+            }}
           >
             ←
           </button>
-          <h1 style={{ fontSize: '18px' }}>{group.name}</h1>
+          <div>
+            <h1 style={{ fontSize: '18px', fontWeight: 700 }}>{group.name}</h1>
+            <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
+              {members.length} members
+            </span>
+          </div>
         </div>
         <button
           className="btn btn-primary"
-          style={{ width: 'auto', padding: '8px 14px', fontSize: '13px' }}
+          style={{ width: 'auto', padding: '10px 18px', fontSize: '13px' }}
           onClick={() => setShowAddExpense(true)}
         >
           + Expense

@@ -72,7 +72,8 @@ export function AddExpenseForm({ groupId, members, currentUserId, onClose, onAdd
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0,0,0,0.6)',
+        background: 'rgba(0,0,0,0.7)',
+        backdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
@@ -82,21 +83,29 @@ export function AddExpenseForm({ groupId, members, currentUserId, onClose, onAdd
     >
       <div
         style={{
-          background: 'var(--bg-card)',
-          borderRadius: '16px 16px 0 0',
+          background: 'var(--bg-card-solid)',
+          borderRadius: '20px 20px 0 0',
           width: '100%',
           maxWidth: '480px',
-          padding: '24px 16px',
+          padding: '28px 20px',
           maxHeight: '85vh',
           overflowY: 'auto',
+          border: '1px solid var(--border)',
+          borderBottom: 'none',
+          boxShadow: '0 -10px 40px rgba(0,0,0,0.5)',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 700 }}>Add Expense</h2>
-          <button onClick={onClose} style={{ background: 'none', color: 'var(--text-muted)', fontSize: '20px' }}>✕</button>
+        {/* Handle bar */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+          <div style={{ width: '36px', height: '4px', borderRadius: '2px', background: 'var(--border)' }} />
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 700 }}>Add Expense</h2>
+          <button onClick={onClose} style={{ background: 'var(--bg-elevated)', color: 'var(--text-muted)', fontSize: '14px', padding: '6px 10px', borderRadius: '8px', border: '1px solid var(--border)' }}>✕</button>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           <div>
             <label className="label">Description</label>
             <input

@@ -1,0 +1,92 @@
+// CONCEPT: Prisma Schema
+// This file defines our PostgreSQL database structure using Prisma ORM.
+// Prisma reads this file and generates:
+//   1. A type-safe TypeScript client (so every query is autocompleted and type-checked)
+//   2. SQL migration files (so database changes are versioned and reproducible)
+// Interview: "I used Prisma as an ORM to get type-safe database queries at compile time,
+// with migration files tracked in Git for reproducible deployments."
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  firstName    String
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  memberships GroupMember[]
+  expenses    Expense[]          @relation("PaidBy")
+  pushSubs    PushSubscription[]
+}
+
+model Group {
+  id        String   @id @default(cuid())
+  name      String
+  version   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  members  GroupMember[]
+  expenses Expense[]
+}
+
+model GroupMember {
+  userId   String
+  groupId  String
+  joinedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
+
+  @@id([userId, groupId])
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  groupId     String
+  description String
+  amount      Float
+  paidById    String
+  createdAt   DateTime @default(now())
+
+  group  Group          @relation(fields: [groupId], references: [id])
+  paidBy User           @relation("PaidBy", fields: [paidById], references: [id])
+  splits ExpenseSplit[]
+}
+
+model ExpenseSplit {
+  id        String @id @default(cuid())
+  expenseId String
+  userId    String
+  share     Float
+
+  expense Expense @relation(fields: [expenseId], references: [id])
+}
+
+model Payment {
+  id          String    @id @default(cuid())
+  groupId     String
+  fromUserId  String
+  toUserId    String
+  amount      Float
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  messageId String? @unique
+}
+
+model PushSubscription {
+  id       String @id @default(cuid())
+  userId   String
+  endpoint String @unique
+  p256dh   String
+  auth     String
+
+  user User @relation(fields: [userId], references: [id])
+}

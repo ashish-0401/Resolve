@@ -1,0 +1,20 @@
+{
+  "name": "resolve",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Graph-native group expense settlement engine",
+  "scripts": {
+    "dev:api": "pnpm --filter @resolve/api dev",
+    "dev:web": "pnpm --filter @resolve/web dev",
+    "build:api": "pnpm --filter @resolve/api build",
+    "build:web": "pnpm --filter @resolve/web build",
+    "db:migrate": "pnpm --filter @resolve/api db:migrate",
+    "db:generate": "pnpm --filter @resolve/api db:generate",
+    "db:studio": "pnpm --filter @resolve/api db:studio",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

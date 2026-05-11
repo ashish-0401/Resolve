@@ -45,10 +45,12 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
         </p>
       </div>
 
-      {/* Transfer cards */}
+      {/* Transfer cards - simple sentence format */}
       {transfers.map((t, i) => {
         const isCurrentUser = t.from.id === currentUserId;
         const key = `${t.from.id}-${t.to.id}`;
+        const fromName = t.from.id === currentUserId ? 'You' : t.from.firstName;
+        const toName = t.to.id === currentUserId ? 'you' : t.to.firstName;
 
         return (
           <div
@@ -60,61 +62,15 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
               borderColor: isCurrentUser ? 'rgba(167, 139, 250, 0.4)' : undefined,
             }}
           >
-            {/* "You need to pay" badge if it's the current user */}
-            {isCurrentUser && (
-              <div style={{
-                fontSize: '11px',
-                fontWeight: 700,
-                color: 'var(--primary)',
-                marginBottom: '12px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}>
-                👆 You need to pay this
-              </div>
-            )}
-
-            {/* Transfer visual */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              {/* From */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '56px' }}>
-                <div
-                  className="avatar"
-                  style={{ background: 'var(--danger-bg)', color: 'var(--danger)', width: '44px', height: '44px', fontSize: '16px' }}
-                >
-                  {t.from.firstName.charAt(0)}
-                </div>
-                <span style={{ fontSize: '12px', fontWeight: 600 }}>
-                  {t.from.id === currentUserId ? 'You' : t.from.firstName}
-                </span>
-              </div>
-
-              {/* Arrow + amount */}
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: '13px', color: 'var(--text-dim)', marginBottom: '2px' }}>pays</div>
-                <div style={{
-                  fontSize: '22px',
-                  fontWeight: 800,
-                  color: 'var(--warning)',
-                  fontFeatureSettings: '"tnum"',
-                }}>
-                  ₹{t.amount.toLocaleString()}
-                </div>
-                <div style={{ fontSize: '16px', color: 'var(--text-dim)', marginTop: '2px' }}>→</div>
-              </div>
-
-              {/* To */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', minWidth: '56px' }}>
-                <div
-                  className="avatar"
-                  style={{ background: 'var(--success-bg)', color: 'var(--success)', width: '44px', height: '44px', fontSize: '16px' }}
-                >
-                  {t.to.firstName.charAt(0)}
-                </div>
-                <span style={{ fontSize: '12px', fontWeight: 600 }}>
-                  {t.to.id === currentUserId ? 'You' : t.to.firstName}
-                </span>
-              </div>
+            {/* Simple sentence: "Anurag pays ₹4,475 to Ashish" */}
+            <div style={{ fontSize: '16px', lineHeight: 1.6 }}>
+              <strong>{fromName}</strong>
+              {' pay'}{fromName === 'You' ? '' : 's'}{' '}
+              <span style={{ fontWeight: 800, color: 'var(--warning)', fontSize: '18px' }}>
+                ₹{t.amount.toLocaleString()}
+              </span>
+              {' to '}
+              <strong>{toName}</strong>
             </div>
 
             {/* Pay button */}
@@ -125,7 +81,7 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
                 onClick={() => handlePay(t)}
                 disabled={paying === key}
               >
-                {paying === key ? 'Sending...' : `Mark as Paid — ₹${t.amount.toLocaleString()}`}
+                {paying === key ? 'Sending...' : `I've paid ₹${t.amount.toLocaleString()} ✓`}
               </button>
             )}
           </div>
@@ -133,7 +89,7 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
       })}
 
       <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px', lineHeight: 1.5 }}>
-        Once paid, tap "Mark as Paid" so the group knows it's done ✓
+        After you pay someone (UPI/cash), tap the button so the group knows ✓
       </p>
     </div>
   );

@@ -17,32 +17,16 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
   }
 
   const sorted = [...balances].sort((a, b) => b.balance - a.balance);
-  const maxAbs = Math.max(...sorted.map((b) => Math.abs(b.balance)), 1);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* Simple explanation */}
-      <div className="card" style={{ padding: '14px 16px', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-          Based on all expenses so far, here's where everyone stands
-        </p>
-      </div>
-
       {/* Individual balances */}
       {sorted.map((b, i) => {
         const isPositive = b.balance > 0;
-        const percentage = (Math.abs(b.balance) / maxAbs) * 100;
         const initial = b.user.firstName.charAt(0).toUpperCase();
 
-        // Simple, clear message
-        const statusText = isPositive
-          ? `Others owe them ₹${b.balance.toLocaleString()}`
-          : b.balance < 0
-            ? `Needs to pay ₹${Math.abs(b.balance).toLocaleString()}`
-            : 'All square! 🎉';
-
         return (
-          <div key={b.user.id} className="card animate-in" style={{ animationDelay: `${i * 50}ms`, padding: '16px 20px' }}>
+          <div key={b.user.id} className="card animate-in" style={{ animationDelay: `${i * 50}ms`, padding: '18px 20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
               {/* Avatar */}
               <div
@@ -54,36 +38,14 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
 
               {/* Info */}
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 700, fontSize: '16px' }}>{b.user.firstName}</span>
-                  <span
-                    style={{
-                      fontWeight: 800,
-                      fontSize: '17px',
-                      fontFeatureSettings: '"tnum"',
-                      color: isPositive ? 'var(--success)' : b.balance < 0 ? 'var(--danger)' : 'var(--text-muted)',
-                    }}
-                  >
-                    {isPositive ? '+' : ''}₹{b.balance.toLocaleString()}
-                  </span>
-                </div>
-
-                {/* Clear status message */}
-                <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                  {statusText}
-                </p>
-
-                {/* Balance bar */}
-                <div className="balance-bar" style={{ marginTop: '10px' }}>
-                  <div
-                    className="balance-bar-fill"
-                    style={{
-                      width: `${percentage}%`,
-                      background: isPositive
-                        ? 'linear-gradient(90deg, #4ade80, #22c55e)'
-                        : 'linear-gradient(90deg, #f87171, #ef4444)',
-                    }}
-                  />
+                <div style={{ fontWeight: 700, fontSize: '16px' }}>{b.user.firstName}</div>
+                <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                  {isPositive
+                    ? <span>Paid <strong style={{ color: 'var(--success)' }}>₹{b.balance.toLocaleString()} extra</strong> — others need to pay them back</span>
+                    : b.balance < 0
+                      ? <span>Owes <strong style={{ color: 'var(--danger)' }}>₹{Math.abs(b.balance).toLocaleString()}</strong> to the group</span>
+                      : <span style={{ color: 'var(--success)' }}>All even! ✓</span>
+                  }
                 </div>
               </div>
             </div>
@@ -92,7 +54,7 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
       })}
 
       <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px', padding: '0 16px' }}>
-        💡 Go to the <strong>Settle</strong> tab to see exactly who pays whom to make everyone even
+        💡 Tap <strong>Settle Up</strong> to see exactly who pays whom
       </p>
     </div>
   );

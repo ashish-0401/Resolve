@@ -123,19 +123,55 @@ export function GraphTab({ balances, transfers }: GraphTabProps) {
             ctx.fillStyle = color;
             ctx.fillText(amtText, x, y + radius + fontSize * 0.9);
           }}
-          linkDirectionalArrowLength={10}
-          linkDirectionalArrowRelPos={0.7}
-          linkColor={() => '#a78bfa'}
-          linkWidth={2}
-          linkCanvasObjectMode={() => 'after'}
+          linkDirectionalArrowLength={0}
+          linkColor={() => 'transparent'}
+          linkWidth={0}
+          linkCanvasObjectMode={() => 'replace'}
           linkCanvasObject={(link: GraphLink, ctx: CanvasRenderingContext2D, globalScale: number) => {
             const src = link.source as unknown as GraphNode;
             const tgt = link.target as unknown as GraphNode;
             if (!src.x || !src.y || !tgt.x || !tgt.y) return;
             if (!isFinite(src.x) || !isFinite(tgt.x)) return;
 
-            const midX = (src.x + tgt.x) / 2;
-            const midY = (src.y + tgt.y) / 2;
+            const nodeRadius = 22 / globalScale;
+
+            // Calculate direction
+            const dx = tgt.x - src.x;
+            const dy = tgt.y - src.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist === 0) return;
+
+            const ux = dx / dist;
+            const uy = dy / dist;
+
+            // Start/end offset by node radius
+            const startX = src.x + ux * nodeRadius;
+            const startY = src.y + uy * nodeRadius;
+            const endX = tgt.x - ux * nodeRadius;
+            const endY = tgt.y - uy * nodeRadius;
+
+            // Draw line
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = '#a78bfa';
+            ctx.lineWidth = 2.5 / globalScale;
+            ctx.stroke();
+
+            // Draw arrowhead
+            const arrowLen = 14 / globalScale;
+            const arrowWidth = 8 / globalScale;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(endX - ux * arrowLen + uy * arrowWidth, endY - uy * arrowLen - ux * arrowWidth);
+            ctx.lineTo(endX - ux * arrowLen - uy * arrowWidth, endY - uy * arrowLen + ux * arrowWidth);
+            ctx.closePath();
+            ctx.fillStyle = '#a78bfa';
+            ctx.fill();
+
+            // Amount label at midpoint
+            const midX = (startX + endX) / 2;
+            const midY = (startY + endY) / 2;
             const fontSize = 10 / globalScale;
             const text = `₹${link.amount.toLocaleString()}`;
 
@@ -143,7 +179,7 @@ export function GraphTab({ balances, transfers }: GraphTabProps) {
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = '#fbbf24';
-            ctx.fillText(text, midX, midY - fontSize * 0.7);
+            ctx.fillText(text, midX, midY - fontSize);
           }}
           cooldownTicks={100}
           d3VelocityDecay={0.3}

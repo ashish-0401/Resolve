@@ -11,7 +11,7 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
     return (
       <div className="empty">
         <p style={{ fontSize: '40px', marginBottom: '8px' }}>💰</p>
-        <p>No expenses yet — add one to see balances.</p>
+        <p>No expenses yet — add one to get started!</p>
       </div>
     );
   }
@@ -19,19 +19,13 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
   const sorted = [...balances].sort((a, b) => b.balance - a.balance);
   const maxAbs = Math.max(...sorted.map((b) => Math.abs(b.balance)), 1);
 
-  // Calculate total pool
-  const totalPaid = sorted.reduce((sum, b) => sum + (b.balance > 0 ? b.balance : 0), 0);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* Summary card */}
-      <div className="card" style={{ textAlign: 'center', padding: '20px' }}>
-        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-          Total to settle
-        </div>
-        <div style={{ fontSize: '32px', fontWeight: 800, marginTop: '4px', letterSpacing: '-1px' }}>
-          ₹{totalPaid.toLocaleString()}
-        </div>
+      {/* Simple explanation */}
+      <div className="card" style={{ padding: '14px 16px', textAlign: 'center' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+          Based on all expenses so far, here's where everyone stands
+        </p>
       </div>
 
       {/* Individual balances */}
@@ -39,6 +33,13 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
         const isPositive = b.balance > 0;
         const percentage = (Math.abs(b.balance) / maxAbs) * 100;
         const initial = b.user.firstName.charAt(0).toUpperCase();
+
+        // Simple, clear message
+        const statusText = isPositive
+          ? `Others owe them ₹${b.balance.toLocaleString()}`
+          : b.balance < 0
+            ? `Needs to pay ₹${Math.abs(b.balance).toLocaleString()}`
+            : 'All square! 🎉';
 
         return (
           <div key={b.user.id} className="card animate-in" style={{ animationDelay: `${i * 50}ms`, padding: '16px 20px' }}>
@@ -54,31 +55,23 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
               {/* Info */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 600, fontSize: '15px' }}>{b.user.firstName}</span>
+                  <span style={{ fontWeight: 700, fontSize: '16px' }}>{b.user.firstName}</span>
                   <span
                     style={{
-                      fontWeight: 700,
-                      fontSize: '16px',
+                      fontWeight: 800,
+                      fontSize: '17px',
                       fontFeatureSettings: '"tnum"',
-                      color: isPositive ? 'var(--success)' : 'var(--danger)',
+                      color: isPositive ? 'var(--success)' : b.balance < 0 ? 'var(--danger)' : 'var(--text-muted)',
                     }}
                   >
                     {isPositive ? '+' : ''}₹{b.balance.toLocaleString()}
                   </span>
                 </div>
 
-                {/* Status chip */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
-                  <span
-                    className="chip"
-                    style={{
-                      background: isPositive ? 'var(--success-bg)' : 'var(--danger-bg)',
-                      color: isPositive ? 'var(--success)' : 'var(--danger)',
-                    }}
-                  >
-                    {isPositive ? '↑ gets back' : '↓ owes'}
-                  </span>
-                </div>
+                {/* Clear status message */}
+                <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                  {statusText}
+                </p>
 
                 {/* Balance bar */}
                 <div className="balance-bar" style={{ marginTop: '10px' }}>
@@ -97,6 +90,10 @@ export function BalancesTab({ balances }: { balances: Balance[] }) {
           </div>
         );
       })}
+
+      <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px', padding: '0 16px' }}>
+        💡 Go to the <strong>Settle</strong> tab to see exactly who pays whom to make everyone even
+      </p>
     </div>
   );
 }

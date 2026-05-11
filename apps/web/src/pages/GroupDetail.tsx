@@ -101,9 +101,7 @@ export function GroupDetailPage() {
               className={`tab ${activeTab === tab ? 'active' : ''}`}
               onClick={() => setActiveTab(tab)}
             >
-              {tab === 'balances' ? '💰' : tab === 'expenses' ? '📋' : tab === 'graph' ? '🕸️' : '✅'}
-              {' '}
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab === 'balances' ? 'Who Owes' : tab === 'expenses' ? 'Expenses' : tab === 'graph' ? 'Graph' : 'Settle Up'}
             </button>
           ))}
         </div>

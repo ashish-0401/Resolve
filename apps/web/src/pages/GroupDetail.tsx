@@ -8,6 +8,7 @@ import { GraphTab } from '../components/GraphTab';
 import { SettleTab } from '../components/SettleTab';
 import { AddExpenseForm } from '../components/AddExpenseForm';
 import { Button } from '@/components/ui/button';
+import { ProfileMenu } from '@/components/ProfileMenu';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Plus } from 'lucide-react';
 
@@ -84,9 +85,12 @@ export function GroupDetailPage() {
               <span className="text-xs text-zinc-500">{members.length} members</span>
             </div>
           </div>
-          <Button size="sm" onClick={() => setShowAddExpense(true)}>
-            <Plus className="h-4 w-4" /> Expense
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" onClick={() => setShowAddExpense(true)}>
+              <Plus className="h-4 w-4" /> Expense
+            </Button>
+            <ProfileMenu />
+          </div>
         </div>
 
         {/* Tab bar */}

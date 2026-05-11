@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, Group } from '../api';
-import { useAuth } from '../context/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TextShimmer } from '@/components/ui/text-shimmer';
 import { GlowCard } from '@/components/ui/glow-card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { ProfileMenu } from '@/components/ProfileMenu';
 import { motion } from 'framer-motion';
-import { LogOut, Plus, ChevronRight, Mountain } from 'lucide-react';
+import { Plus, ChevronRight, Mountain } from 'lucide-react';
 
 export function GroupsPage() {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,16 +47,7 @@ export function GroupsPage() {
       {/* Header */}
       <div className="flex items-center justify-between py-5">
         <TextShimmer className="text-xl font-black">RESOLVE</TextShimmer>
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-violet-500/20 text-violet-300 text-xs">
-              {user?.firstName?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <Button variant="ghost" size="icon" onClick={logout} className="h-8 w-8">
-            <LogOut className="h-4 w-4" />
-          </Button>
-        </div>
+        <ProfileMenu />
       </div>
 
       {/* Section header */}

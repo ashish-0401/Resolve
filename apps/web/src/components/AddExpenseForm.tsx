@@ -1,64 +1,46 @@
 import { useState } from 'react';
 import { api, User } from '../api';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 interface AddExpenseFormProps {
   groupId: string;
   members: User[];
-  currentUserId: string;
-  onClose: () => void;
   onAdded: () => void;
+  onClose: () => void;
 }
 
-export function AddExpenseForm({ groupId, members, currentUserId, onClose, onAdded }: AddExpenseFormProps) {
+export function AddExpenseForm({ groupId, members, onAdded, onClose }: AddExpenseFormProps) {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
-  const [paidById, setPaidById] = useState(currentUserId);
-  const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set(members.map((m) => m.id)));
-  const [error, setError] = useState('');
+  const [paidById, setPaidById] = useState(members[0]?.id ?? '');
+  const [splitType, setSplitType] = useState<'equal' | 'custom'>('equal');
+  const [customShares, setCustomShares] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-
-  const toggleMember = (id: string) => {
-    setSelectedMembers((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        if (next.size <= 1) return prev; // must have at least 1
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
-    });
-  };
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    const amtNum = parseFloat(amount);
+    if (!amtNum || amtNum <= 0) { setError('Enter a valid amount'); return; }
 
-    const amountNum = parseFloat(amount);
-    if (isNaN(amountNum) || amountNum <= 0) {
-      setError('Enter a valid amount');
-      return;
+    let splits: { userId: string; share: number }[];
+    if (splitType === 'equal') {
+      const share = Math.round((amtNum / members.length) * 100) / 100;
+      splits = members.map((m) => ({ userId: m.id, share }));
+    } else {
+      splits = members.map((m) => ({ userId: m.id, share: parseFloat(customShares[m.id] || '0') }));
+      const total = splits.reduce((s, x) => s + x.share, 0);
+      if (Math.abs(total - amtNum) > 0.01) { setError(`Shares add to ${total}, should be ${amtNum}`); return; }
     }
-
-    const splitMembers = Array.from(selectedMembers);
-    const share = Math.round((amountNum / splitMembers.length) * 100) / 100;
-
-    // Adjust last share to account for rounding
-    const splits = splitMembers.map((userId, i) => ({
-      userId,
-      share: i === splitMembers.length - 1
-        ? Math.round((amountNum - share * (splitMembers.length - 1)) * 100) / 100
-        : share,
-    }));
 
     setLoading(true);
     try {
-      await api.createExpense(groupId, {
-        description: description.trim(),
-        amount: amountNum,
-        paidById,
-        splits,
-      });
+      await api.createExpense(groupId, { description, amount: amtNum, paidById, splits });
       onAdded();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to add expense');
@@ -68,121 +50,127 @@ export function AddExpenseForm({ groupId, members, currentUserId, onClose, onAdd
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.7)',
-        backdropFilter: 'blur(4px)',
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        zIndex: 100,
-      }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        style={{
-          background: 'var(--bg-card-solid)',
-          borderRadius: '20px 20px 0 0',
-          width: '100%',
-          maxWidth: '480px',
-          padding: '28px 20px',
-          maxHeight: '85vh',
-          overflowY: 'auto',
-          border: '1px solid var(--border)',
-          borderBottom: 'none',
-          boxShadow: '0 -10px 40px rgba(0,0,0,0.5)',
-        }}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end justify-center z-50"
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       >
-        {/* Handle bar */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-          <div style={{ width: '36px', height: '4px', borderRadius: '2px', background: 'var(--border)' }} />
-        </div>
+        <motion.div
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          exit={{ y: 100 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="w-full max-w-md"
+        >
+          <Card className="rounded-b-none border-b-0">
+            <CardContent className="pt-5 pb-6">
+              {/* Handle bar */}
+              <div className="flex justify-center mb-4">
+                <div className="w-9 h-1 rounded-full bg-zinc-700" />
+              </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 700 }}>Add Expense</h2>
-          <button onClick={onClose} style={{ background: 'var(--bg-elevated)', color: 'var(--text-muted)', fontSize: '14px', padding: '6px 10px', borderRadius: '8px', border: '1px solid var(--border)' }}>✕</button>
-        </div>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-lg font-bold">Add Expense</h2>
+                <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          <div>
-            <label className="label">Description</label>
-            <input
-              className="input"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Dinner, Uber, groceries..."
-              required
-              autoFocus
-            />
-          </div>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">What for?</label>
+                  <Input
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="e.g. Dinner, Hotel, Fuel"
+                    required
+                  />
+                </div>
 
-          <div>
-            <label className="label">Amount</label>
-            <input
-              className="input"
-              type="number"
-              step="0.01"
-              min="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
-              required
-            />
-          </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Amount (₹)</label>
+                  <Input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0"
+                    min="0"
+                    step="any"
+                    required
+                  />
+                </div>
 
-          <div>
-            <label className="label">Paid by</label>
-            <select
-              className="input"
-              value={paidById}
-              onChange={(e) => setPaidById(e.target.value)}
-            >
-              {members.map((m) => (
-                <option key={m.id} value={m.id}>{m.firstName}</option>
-              ))}
-            </select>
-          </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Who paid?</label>
+                  <select
+                    value={paidById}
+                    onChange={(e) => setPaidById(e.target.value)}
+                    className="flex h-11 w-full rounded-xl border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500 transition-all"
+                  >
+                    {members.map((m) => (
+                      <option key={m.id} value={m.id}>{m.firstName}</option>
+                    ))}
+                  </select>
+                </div>
 
-          <div>
-            <label className="label">Split with</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
-              {members.map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => toggleMember(m.id)}
-                  style={{
-                    padding: '8px 14px',
-                    borderRadius: '20px',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    border: '1px solid',
-                    borderColor: selectedMembers.has(m.id) ? 'var(--primary)' : 'var(--border)',
-                    background: selectedMembers.has(m.id) ? 'var(--primary)' : 'transparent',
-                    color: selectedMembers.has(m.id) ? 'white' : 'var(--text-muted)',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {selectedMembers.has(m.id) ? '✓ ' : ''}{m.firstName}
-                </button>
-              ))}
-            </div>
-            {amount && selectedMembers.size > 0 && (
-              <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '8px' }}>
-                {(parseFloat(amount) / selectedMembers.size).toFixed(2)} per person
-              </p>
-            )}
-          </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Split</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSplitType('equal')}
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
+                        splitType === 'equal'
+                          ? 'bg-violet-600 text-white border-violet-500'
+                          : 'bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700'
+                      }`}
+                    >
+                      Equal
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSplitType('custom')}
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
+                        splitType === 'custom'
+                          ? 'bg-violet-600 text-white border-violet-500'
+                          : 'bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700'
+                      }`}
+                    >
+                      Custom
+                    </button>
+                  </div>
+                </div>
 
-          {error && <p className="error-text">{error}</p>}
+                {splitType === 'custom' && (
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {members.map((m) => (
+                      <div key={m.id} className="flex items-center gap-3">
+                        <span className="text-sm text-zinc-300 w-20 truncate">{m.firstName}</span>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          value={customShares[m.id] || ''}
+                          onChange={(e) => setCustomShares((prev) => ({ ...prev, [m.id]: e.target.value }))}
+                          className="h-9"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-          <button className="btn btn-primary" type="submit" disabled={loading}>
-            {loading ? 'Adding...' : 'Add Expense'}
-          </button>
-        </form>
-      </div>
-    </div>
+                {error && <p className="text-red-400 text-sm">{error}</p>}
+
+                <Button type="submit" disabled={loading} className="mt-1">
+                  {loading ? 'Adding...' : 'Add Expense'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

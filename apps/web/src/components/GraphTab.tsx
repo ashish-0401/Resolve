@@ -1,6 +1,7 @@
 import { useRef, useEffect, useMemo, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { Balance, Transfer } from '../api';
+import { GlowCard } from '@/components/ui/glow-card';
 
 interface GraphTabProps {
   balances: Balance[];
@@ -24,7 +25,7 @@ interface GraphLink {
 
 export function GraphTab({ balances, transfers }: GraphTabProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const fgRef = useRef<{ d3ReheatSimulation: () => void } | undefined>(undefined);
+  const fgRef = useRef<any>(undefined);
   const [dimensions, setDimensions] = useState({ width: 400, height: 340 });
 
   const graphData = useMemo(() => {
@@ -61,29 +62,29 @@ export function GraphTab({ balances, transfers }: GraphTabProps) {
 
   if (balances.length === 0) {
     return (
-      <div className="empty">
-        <p style={{ fontSize: '40px', marginBottom: '8px' }}>🕸️</p>
+      <div className="text-center pt-12 text-zinc-400">
+        <p className="text-4xl mb-2">🕸️</p>
         <p>Add expenses to see who owes who</p>
       </div>
     );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <div className="flex flex-col gap-3">
       {/* Explanation */}
-      <div className="card" style={{ padding: '14px 16px', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-          🔴 Red = owes money &nbsp;·&nbsp; 🟢 Green = gets money back
+      <GlowCard className="text-center py-3">
+        <p className="text-sm text-zinc-300">
+          🔴 Red = owes money · 🟢 Green = gets money back
         </p>
-        <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px' }}>
+        <p className="text-xs text-zinc-500 mt-1">
           Arrows show who needs to pay whom
         </p>
-      </div>
+      </GlowCard>
 
       <div
         ref={containerRef}
-        className="card"
-        style={{ padding: 0, overflow: 'hidden', height: '340px' }}
+        className="rounded-2xl border border-zinc-800/60 bg-zinc-900/70 overflow-hidden"
+        style={{ height: '340px' }}
       >
         <ForceGraph2D
           ref={fgRef}

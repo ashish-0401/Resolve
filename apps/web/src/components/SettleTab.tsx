@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { api, Transfer } from '../api';
+import { GlowCard } from '@/components/ui/glow-card';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 interface SettleTabProps {
   transfers: Transfer[];
@@ -13,10 +16,12 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
 
   if (transfers.length === 0) {
     return (
-      <div className="empty">
-        <p style={{ fontSize: '48px', marginBottom: '8px' }}>🎉</p>
-        <p style={{ fontSize: '17px', fontWeight: 700 }}>Everyone's even!</p>
-        <p style={{ color: 'var(--text-dim)', marginTop: '4px' }}>No one needs to pay anything.</p>
+      <div className="text-center pt-12">
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+          <p className="text-5xl mb-3">🎉</p>
+          <p className="text-lg font-bold text-zinc-100">Everyone's even!</p>
+          <p className="text-zinc-500 mt-1 text-sm">No one needs to pay anything.</p>
+        </motion.div>
       </div>
     );
   }
@@ -34,18 +39,18 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* Clear explanation at the top */}
-      <div className="card" style={{ padding: '16px 20px', textAlign: 'center' }}>
-        <p style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)' }}>
-          To make everyone even, just do these {transfers.length} payment{transfers.length !== 1 ? 's' : ''}:
+    <div className="flex flex-col gap-3">
+      {/* Explanation */}
+      <GlowCard className="text-center">
+        <p className="text-[15px] font-semibold text-zinc-100">
+          {transfers.length} payment{transfers.length !== 1 ? 's' : ''} to make everyone even:
         </p>
-        <p style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '6px' }}>
+        <p className="text-xs text-zinc-500 mt-1.5">
           No one pays extra — this is the minimum needed to settle up
         </p>
-      </div>
+      </GlowCard>
 
-      {/* Transfer cards - simple sentence format */}
+      {/* Transfer cards */}
       {transfers.map((t, i) => {
         const isCurrentUser = t.from.id === currentUserId;
         const key = `${t.from.id}-${t.to.id}`;
@@ -53,43 +58,39 @@ export function SettleTab({ transfers, groupId, currentUserId, onPayment }: Sett
         const toName = t.to.id === currentUserId ? 'you' : t.to.firstName;
 
         return (
-          <div
+          <GlowCard
             key={i}
-            className="card animate-in"
-            style={{
-              animationDelay: `${i * 80}ms`,
-              padding: '20px',
-              borderColor: isCurrentUser ? 'rgba(167, 139, 250, 0.4)' : undefined,
-            }}
+            delay={i * 0.08}
+            glowColor={isCurrentUser ? 'violet' : 'amber'}
+            className={isCurrentUser ? 'border-violet-500/30' : ''}
           >
-            {/* Simple sentence: "Anurag pays ₹4,475 to Ashish" */}
-            <div style={{ fontSize: '16px', lineHeight: 1.6 }}>
-              <strong>{fromName}</strong>
+            {/* Sentence format */}
+            <div className="text-base leading-relaxed">
+              <span className="font-bold text-zinc-100">{fromName}</span>
               {' pay'}{fromName === 'You' ? '' : 's'}{' '}
-              <span style={{ fontWeight: 800, color: 'var(--warning)', fontSize: '18px' }}>
+              <span className="font-black text-lg text-amber-400">
                 ₹{t.amount.toLocaleString()}
               </span>
               {' to '}
-              <strong>{toName}</strong>
+              <span className="font-bold text-zinc-100">{toName}</span>
             </div>
 
-            {/* Pay button */}
+            {/* Pay button for current user */}
             {isCurrentUser && (
-              <button
-                className="btn btn-primary"
-                style={{ marginTop: '16px', fontSize: '14px' }}
+              <Button
+                className="w-full mt-4"
                 onClick={() => handlePay(t)}
                 disabled={paying === key}
               >
                 {paying === key ? 'Sending...' : `I've paid ₹${t.amount.toLocaleString()} ✓`}
-              </button>
+              </Button>
             )}
-          </div>
+          </GlowCard>
         );
       })}
 
-      <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--text-dim)', marginTop: '4px', lineHeight: 1.5 }}>
-        After you pay someone (UPI/cash), tap the button so the group knows ✓
+      <p className="text-center text-xs text-zinc-600 mt-2">
+        After paying (UPI/cash), tap the button so the group knows ✓
       </p>
     </div>
   );

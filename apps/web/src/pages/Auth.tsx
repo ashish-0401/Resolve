@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { TextShimmer } from '@/components/ui/text-shimmer';
+import { motion } from 'framer-motion';
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -25,49 +30,58 @@ export function LoginPage() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: '100px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 800, background: 'linear-gradient(135deg, #a78bfa, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>RESOLVE</h1>
-        <p style={{ color: 'var(--text-dim)', marginTop: '8px', fontSize: '14px' }}>
-          Split expenses, settle debts
-        </p>
-      </div>
+    <div className="max-w-md mx-auto px-4 pt-28">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-10"
+      >
+        <TextShimmer className="text-4xl font-black tracking-tight">RESOLVE</TextShimmer>
+        <p className="text-zinc-500 mt-2 text-sm">Split expenses, settle debts</p>
+      </motion.div>
 
-      <form onSubmit={handleSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '18px', padding: '24px' }}>
-        <div>
-          <label className="label">Email</label>
-          <input
-            className="input"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-          />
-        </div>
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <Card>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Email</label>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
 
-        <div>
-          <label className="label">Password</label>
-          <input
-            className="input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            required
-          />
-        </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Password</label>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
 
-        {error && <p className="error-text">{error}</p>}
+              {error && <p className="text-red-400 text-sm">{error}</p>}
 
-        <button className="btn btn-primary" type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Log In'}
-        </button>
+              <Button type="submit" disabled={loading} className="mt-2">
+                {loading ? 'Logging in...' : 'Log In'}
+              </Button>
 
-        <p style={{ textAlign: 'center', fontSize: '14px', color: 'var(--text-muted)' }}>
-          No account? <Link to="/register">Register</Link>
-        </p>
-      </form>
+              <p className="text-center text-sm text-zinc-400">
+                No account?{' '}
+                <Link to="/register" className="text-violet-400 hover:text-violet-300 font-medium">
+                  Register
+                </Link>
+              </p>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
@@ -96,62 +110,70 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="container" style={{ paddingTop: '80px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 800, background: 'linear-gradient(135deg, #a78bfa, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>RESOLVE</h1>
-        <p style={{ color: 'var(--text-dim)', marginTop: '8px', fontSize: '14px' }}>
-          Create your account
-        </p>
-      </div>
+    <div className="max-w-md mx-auto px-4 pt-24">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-10"
+      >
+        <TextShimmer className="text-4xl font-black tracking-tight">RESOLVE</TextShimmer>
+        <p className="text-zinc-500 mt-2 text-sm">Create your account</p>
+      </motion.div>
 
-      <form onSubmit={handleSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '18px', padding: '24px' }}>
-        <div>
-          <label className="label">First Name</label>
-          <input
-            className="input"
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            placeholder="Alice"
-            required
-          />
-        </div>
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <Card>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Name</label>
+                <Input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Your first name"
+                  required
+                />
+              </div>
 
-        <div>
-          <label className="label">Email</label>
-          <input
-            className="input"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            required
-          />
-        </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Email</label>
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
 
-        <div>
-          <label className="label">Password</label>
-          <input
-            className="input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Min 8 characters"
-            minLength={8}
-            required
-          />
-        </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Password</label>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Min 8 characters"
+                  minLength={8}
+                  required
+                />
+              </div>
 
-        {error && <p className="error-text">{error}</p>}
+              {error && <p className="text-red-400 text-sm">{error}</p>}
 
-        <button className="btn btn-primary" type="submit" disabled={loading}>
-          {loading ? 'Creating account...' : 'Register'}
-        </button>
+              <Button type="submit" disabled={loading} className="mt-2">
+                {loading ? 'Creating account...' : 'Register'}
+              </Button>
 
-        <p style={{ textAlign: 'center', fontSize: '14px', color: 'var(--text-muted)' }}>
-          Already have an account? <Link to="/login">Log in</Link>
-        </p>
-      </form>
+              <p className="text-center text-sm text-zinc-400">
+                Already have an account?{' '}
+                <Link to="/login" className="text-violet-400 hover:text-violet-300 font-medium">
+                  Log in
+                </Link>
+              </p>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }

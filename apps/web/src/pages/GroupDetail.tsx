@@ -7,8 +7,18 @@ import { ExpensesTab } from '../components/ExpensesTab';
 import { GraphTab } from '../components/GraphTab';
 import { SettleTab } from '../components/SettleTab';
 import { AddExpenseForm } from '../components/AddExpenseForm';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Plus } from 'lucide-react';
 
 type Tab = 'balances' | 'expenses' | 'graph' | 'settle';
+
+const TAB_LABELS: Record<Tab, string> = {
+  balances: 'Who Owes',
+  expenses: 'Expenses',
+  graph: 'Graph',
+  settle: 'Settle Up',
+};
 
 export function GroupDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -53,7 +63,7 @@ export function GroupDetailPage() {
   };
 
   if (loading) {
-    return <div className="spinner" style={{ paddingTop: '80px' }}>Loading...</div>;
+    return <div className="flex items-center justify-center pt-20 text-zinc-500">Loading...</div>;
   }
 
   if (!group) return null;
@@ -62,70 +72,62 @@ export function GroupDetailPage() {
 
   return (
     <>
-      <div className="header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              background: 'var(--bg-elevated)',
-              color: 'var(--text-muted)',
-              fontSize: '14px',
-              padding: '8px 10px',
-              borderRadius: '10px',
-              border: '1px solid var(--border)',
-            }}
-          >
-            ←
-          </button>
-          <div>
-            <h1 style={{ fontSize: '18px', fontWeight: 700 }}>{group.name}</h1>
-            <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-              {members.length} members
-            </span>
+      <div className="max-w-md mx-auto px-4 pb-8">
+        {/* Header */}
+        <div className="flex items-center justify-between py-5">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="h-9 w-9">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-lg font-bold">{group.name}</h1>
+              <span className="text-xs text-zinc-500">{members.length} members</span>
+            </div>
           </div>
+          <Button size="sm" onClick={() => setShowAddExpense(true)}>
+            <Plus className="h-4 w-4" /> Expense
+          </Button>
         </div>
-        <button
-          className="btn btn-primary"
-          style={{ width: 'auto', padding: '10px 18px', fontSize: '13px' }}
-          onClick={() => setShowAddExpense(true)}
-        >
-          + Expense
-        </button>
-      </div>
 
-      <div className="container" style={{ paddingTop: 0 }}>
-        <div className="tabs">
+        {/* Tab bar */}
+        <div className="flex gap-1 p-1 rounded-2xl bg-zinc-900/80 border border-zinc-800/60 mb-5">
           {(['balances', 'expenses', 'graph', 'settle'] as Tab[]).map((tab) => (
             <button
               key={tab}
-              className={`tab ${activeTab === tab ? 'active' : ''}`}
               onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-2.5 text-xs font-semibold rounded-xl transition-all duration-200 cursor-pointer ${
+                activeTab === tab
+                  ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
+                  : 'text-zinc-500 hover:text-zinc-300'
+              }`}
             >
-              {tab === 'balances' ? 'Who Owes' : tab === 'expenses' ? 'Expenses' : tab === 'graph' ? 'Graph' : 'Settle Up'}
+              {TAB_LABELS[tab]}
             </button>
           ))}
         </div>
 
-        {activeTab === 'balances' && <BalancesTab balances={balances} />}
-        {activeTab === 'expenses' && <ExpensesTab expenses={expenses} members={members} />}
-        {activeTab === 'graph' && <GraphTab balances={balances} transfers={transfers} />}
-        {activeTab === 'settle' && (
-          <SettleTab
-            transfers={transfers}
-            groupId={groupId}
-            currentUserId={user!.id}
-            onPayment={loadData}
-          />
-        )}
+        {/* Tab content */}
+        <motion.div key={activeTab} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+          {activeTab === 'balances' && <BalancesTab balances={balances} />}
+          {activeTab === 'expenses' && <ExpensesTab expenses={expenses} members={members} />}
+          {activeTab === 'graph' && <GraphTab balances={balances} transfers={transfers} />}
+          {activeTab === 'settle' && (
+            <SettleTab
+              transfers={transfers}
+              groupId={groupId}
+              currentUserId={user!.id}
+              onPayment={loadData}
+            />
+          )}
+        </motion.div>
       </div>
 
       {showAddExpense && (
         <AddExpenseForm
           groupId={groupId}
           members={members}
-          currentUserId={user!.id}
-          onClose={() => setShowAddExpense(false)}
           onAdded={handleExpenseAdded}
+          onClose={() => setShowAddExpense(false)}
         />
       )}
     </>

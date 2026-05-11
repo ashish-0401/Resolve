@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, Group } from '../api';
 import { useAuth } from '../context/AuthContext';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { TextShimmer } from '@/components/ui/text-shimmer';
+import { GlowCard } from '@/components/ui/glow-card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { motion } from 'framer-motion';
+import { LogOut, Plus, ChevronRight, Mountain } from 'lucide-react';
 
 export function GroupsPage() {
   const { user, logout } = useAuth();
@@ -37,106 +45,84 @@ export function GroupsPage() {
   };
 
   return (
-    <>
-      <div className="header">
-        <h1 style={{ background: 'linear-gradient(135deg, #a78bfa, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          RESOLVE
-        </h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div
-            className="avatar"
-            style={{ width: '32px', height: '32px', fontSize: '13px', background: 'var(--primary-glow)', color: 'var(--primary)' }}
-          >
-            {user?.firstName?.charAt(0)}
-          </div>
-          <button
-            className="btn-secondary"
-            onClick={logout}
-            style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '12px', background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}
-          >
-            Logout
-          </button>
+    <div className="max-w-md mx-auto px-4 pb-8">
+      {/* Header */}
+      <div className="flex items-center justify-between py-5">
+        <TextShimmer className="text-xl font-black">RESOLVE</TextShimmer>
+        <div className="flex items-center gap-3">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-violet-500/20 text-violet-300 text-xs">
+              {user?.firstName?.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <Button variant="ghost" size="icon" onClick={logout} className="h-8 w-8">
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
-      <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-muted)' }}>Your Groups</h2>
-          <button
-            className="btn btn-primary"
-            style={{ width: 'auto', padding: '10px 18px', fontSize: '13px' }}
-            onClick={() => setShowCreate(!showCreate)}
-          >
-            + New
-          </button>
+      {/* Section header */}
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Your Trips</h2>
+        <Button size="sm" onClick={() => setShowCreate(!showCreate)}>
+          <Plus className="h-4 w-4" /> New
+        </Button>
+      </div>
+
+      {/* Create form */}
+      {showCreate && (
+        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mb-5">
+          <Card>
+            <CardContent className="pt-4">
+              <form onSubmit={handleCreate} className="flex gap-3">
+                <Input
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Trip name..."
+                  autoFocus
+                />
+                <Button type="submit" disabled={creating} className="shrink-0">
+                  {creating ? '...' : 'Create'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Groups list */}
+      {loading ? (
+        <div className="text-center pt-12 text-zinc-500">Loading...</div>
+      ) : groups.length === 0 ? (
+        <div className="text-center pt-16">
+          <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+            <Mountain className="h-12 w-12 mx-auto text-zinc-700 mb-4" />
+            <p className="text-zinc-300 font-semibold">No trips yet</p>
+            <p className="text-zinc-500 text-sm mt-1">Create a group to start splitting expenses</p>
+          </motion.div>
         </div>
-
-        {showCreate && (
-          <form
-            onSubmit={handleCreate}
-            className="card animate-in"
-            style={{ marginBottom: '16px', display: 'flex', gap: '10px', alignItems: 'center' }}
-          >
-            <input
-              className="input"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder="Trip name..."
-              autoFocus
-            />
-            <button
-              className="btn btn-primary"
-              type="submit"
-              disabled={creating}
-              style={{ width: 'auto', whiteSpace: 'nowrap', padding: '14px 20px' }}
-            >
-              {creating ? '...' : 'Create'}
-            </button>
-          </form>
-        )}
-
-        {loading ? (
-          <div className="spinner">Loading...</div>
-        ) : groups.length === 0 ? (
-          <div className="empty">
-            <p style={{ fontSize: '48px' }}>🏔️</p>
-            <p style={{ fontSize: '15px', fontWeight: 500, marginTop: '12px' }}>No trips yet</p>
-            <p style={{ color: 'var(--text-dim)' }}>Create a group to start splitting expenses</p>
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {groups.map((g, i) => (
-              <Link key={g.id} to={`/groups/${g.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div className="card animate-in" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', animationDelay: `${i * 60}ms` }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <div
-                      style={{
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '12px',
-                        background: 'var(--primary-glow)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '18px',
-                      }}
-                    >
-                      🏔️
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '15px' }}>{g.name}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '2px' }}>
-                        {g.memberCount} member{g.memberCount !== 1 ? 's' : ''}
-                      </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {groups.map((g, i) => (
+            <Link key={g.id} to={`/groups/${g.id}`} className="no-underline">
+              <GlowCard delay={i * 0.05} className="flex items-center justify-between cursor-pointer">
+                <div className="flex items-center gap-3.5">
+                  <div className="h-10 w-10 rounded-xl bg-violet-500/10 flex items-center justify-center">
+                    <Mountain className="h-5 w-5 text-violet-400" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-[15px] text-zinc-100">{g.name}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5">
+                      {g.memberCount} member{g.memberCount !== 1 ? 's' : ''}
                     </div>
                   </div>
-                  <span style={{ color: 'var(--text-dim)', fontSize: '16px' }}>›</span>
                 </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </>
+                <ChevronRight className="h-4 w-4 text-zinc-600" />
+              </GlowCard>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,77 +1,66 @@
 import { Expense, User } from '../api';
+import { GlowCard } from '@/components/ui/glow-card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
-const COLORS = ['#a78bfa', '#34d399', '#fbbf24', '#f472b6', '#60a5fa', '#fb923c'];
+const COLORS = ['bg-violet-500/20 text-violet-300', 'bg-emerald-500/20 text-emerald-300', 'bg-amber-500/20 text-amber-300', 'bg-pink-500/20 text-pink-300', 'bg-blue-500/20 text-blue-300', 'bg-orange-500/20 text-orange-300'];
 
 export function ExpensesTab({ expenses, members }: { expenses: Expense[]; members: User[] }) {
   if (expenses.length === 0) {
     return (
-      <div className="empty">
-        <p style={{ fontSize: '40px', marginBottom: '8px' }}>📋</p>
+      <div className="text-center pt-12 text-zinc-400">
+        <p className="text-4xl mb-2">📋</p>
         <p>No expenses yet.</p>
       </div>
     );
   }
 
-  const memberMap = new Map(members.map((m, i) => [m.id, { ...m, color: COLORS[i % COLORS.length] }]));
+  const memberMap = new Map(members.map((m, i) => [m.id, { ...m, colorIdx: i }]));
   const total = expenses.reduce((s, e) => s + e.amount, 0);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {/* Total */}
-      <div className="card" style={{ textAlign: 'center', padding: '16px 20px' }}>
-        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-          Total expenses
-        </div>
-        <div style={{ fontSize: '28px', fontWeight: 800, marginTop: '4px', letterSpacing: '-1px' }}>
-          ₹{total.toLocaleString()}
-        </div>
-        <div style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '2px' }}>
-          {expenses.length} expense{expenses.length !== 1 ? 's' : ''}
-        </div>
-      </div>
+    <div className="flex flex-col gap-3">
+      {/* Total summary */}
+      <GlowCard className="text-center">
+        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Total expenses</p>
+        <p className="text-3xl font-black mt-1 tracking-tight">₹{total.toLocaleString()}</p>
+        <p className="text-xs text-zinc-500 mt-1">{expenses.length} expense{expenses.length !== 1 ? 's' : ''}</p>
+      </GlowCard>
 
       {/* Expense list */}
       {expenses.map((exp, i) => {
         const payer = memberMap.get(exp.paidById);
-        const payerColor = payer?.color ?? '#a78bfa';
+        const colorClass = COLORS[(payer?.colorIdx ?? 0) % COLORS.length];
 
         return (
-          <div key={exp.id} className="card animate-in" style={{ animationDelay: `${i * 40}ms`, padding: '16px 20px' }}>
-            <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-              {/* Payer avatar */}
-              <div
-                className="avatar"
-                style={{ background: `${payerColor}20`, color: payerColor, marginTop: '2px' }}
-              >
-                {exp.paidBy.firstName.charAt(0)}
-              </div>
+          <GlowCard key={exp.id} delay={i * 0.04}>
+            <div className="flex gap-3.5">
+              <Avatar className="mt-0.5">
+                <AvatarFallback className={colorClass}>
+                  {exp.paidBy.firstName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
 
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start">
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: '15px' }}>{exp.description}</div>
-                    <div style={{ fontSize: '12px', color: 'var(--text-dim)', marginTop: '2px' }}>
+                    <div className="font-semibold text-[15px]">{exp.description}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5">
                       {exp.paidBy.firstName} paid · {new Date(exp.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                     </div>
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: '16px', fontFeatureSettings: '"tnum"', whiteSpace: 'nowrap' }}>
+                  <div className="font-bold text-base tabular-nums shrink-0 ml-2">
                     ₹{exp.amount.toLocaleString()}
                   </div>
                 </div>
 
                 {/* Split chips */}
-                <div style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
                   {exp.splits.map((s) => {
                     const member = memberMap.get(s.userId);
                     return (
                       <span
                         key={s.userId}
-                        className="chip"
-                        style={{
-                          background: 'var(--bg-elevated)',
-                          color: 'var(--text-muted)',
-                          border: '1px solid var(--border-subtle)',
-                        }}
+                        className="px-2.5 py-1 rounded-lg bg-zinc-800/80 text-[11px] font-medium text-zinc-400 border border-zinc-700/50"
                       >
                         {member?.firstName ?? '?'}: ₹{s.share.toLocaleString()}
                       </span>
@@ -80,7 +69,7 @@ export function ExpensesTab({ expenses, members }: { expenses: Expense[]; member
                 </div>
               </div>
             </div>
-          </div>
+          </GlowCard>
         );
       })}
     </div>

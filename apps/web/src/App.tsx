@@ -3,10 +3,11 @@ import { useAuth } from './context/AuthContext';
 import { LoginPage, RegisterPage } from './pages/Auth';
 import { GroupsPage } from './pages/Groups';
 import { GroupDetailPage } from './pages/GroupDetail';
+import { GridBackground } from './components/ui/grid-background';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="spinner" style={{ paddingTop: '80px' }}>Loading...</div>;
+  if (loading) return <div className="flex items-center justify-center pt-20 text-zinc-500">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
@@ -20,12 +21,14 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 export function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-      <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
-      <Route path="/" element={<ProtectedRoute><GroupsPage /></ProtectedRoute>} />
-      <Route path="/groups/:id" element={<ProtectedRoute><GroupDetailPage /></ProtectedRoute>} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <GridBackground>
+      <Routes>
+        <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+        <Route path="/" element={<ProtectedRoute><GroupsPage /></ProtectedRoute>} />
+        <Route path="/groups/:id" element={<ProtectedRoute><GroupDetailPage /></ProtectedRoute>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </GridBackground>
   );
 }

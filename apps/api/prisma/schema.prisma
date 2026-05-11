@@ -75,6 +75,7 @@ model Payment {
   fromUserId  String
   toUserId    String
   amount      Float
+  proofUrl    String?
   confirmedAt DateTime?
   createdAt   DateTime  @default(now())
 

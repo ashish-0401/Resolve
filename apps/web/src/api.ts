@@ -62,10 +62,10 @@ export const api = {
     request<{ transfers: Transfer[]; cached: boolean }>(`/groups/${groupId}/settlement`),
 
   // Payments
-  createPayment: (groupId: string, toUserId: string, amount: number) =>
+  createPayment: (groupId: string, toUserId: string, amount: number, proofUrl?: string) =>
     request<{ payment: Payment }>(`/groups/${groupId}/payments`, {
       method: 'POST',
-      body: JSON.stringify({ toUserId, amount }),
+      body: JSON.stringify({ toUserId, amount, proofUrl }),
     }),
 
   confirmPayment: (groupId: string, paymentId: string) =>

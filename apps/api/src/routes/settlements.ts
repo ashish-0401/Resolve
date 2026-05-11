@@ -120,7 +120,7 @@ settlementsRouter.post('/:groupId/payments', async (req: Request, res: Response)
   const userId = req.user!.userId;
   const groupId = req.params.groupId;
 
-  const { toUserId, amount } = req.body;
+  const { toUserId, amount, proofUrl } = req.body;
 
   if (!toUserId || typeof toUserId !== 'string') {
     res.status(400).json({ error: 'toUserId is required' });
@@ -129,6 +129,11 @@ settlementsRouter.post('/:groupId/payments', async (req: Request, res: Response)
 
   if (!amount || typeof amount !== 'number' || amount <= 0) {
     res.status(400).json({ error: 'amount must be a positive number' });
+    return;
+  }
+
+  if (proofUrl && typeof proofUrl !== 'string') {
+    res.status(400).json({ error: 'proofUrl must be a string' });
     return;
   }
 
@@ -162,6 +167,7 @@ settlementsRouter.post('/:groupId/payments', async (req: Request, res: Response)
       fromUserId: userId,
       toUserId,
       amount,
+      proofUrl: proofUrl || null,
       messageId,
     },
   });

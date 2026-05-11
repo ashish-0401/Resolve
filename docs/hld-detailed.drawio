@@ -1,0 +1,286 @@
+<mxfile host="app.diagrams.net" modified="2026-05-11T10:00:00.000Z" agent="VS Code" version="21.0.0" type="device">
+  <diagram id="detailed-hld" name="Detailed HLD">
+    <mxGraphModel dx="1800" dy="2400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="2400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============ SECTION 1: SYSTEM OVERVIEW ============ -->
+        <mxCell id="s1-title" value="1. System Overview" style="text;html=1;fontSize=20;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- PWA -->
+        <mxCell id="pwa" value="📱 React PWA&#xa;&#xa;• Installable (manifest.json)&#xa;• Offline-capable (Service Worker)&#xa;• Web Push notifications&#xa;• react-force-graph (debt viz)&#xa;• Mobile-first UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="560" y="70" width="250" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow PWA → API -->
+        <mxCell id="a1" value="HTTPS&#xa;JWT in httpOnly cookie&#xa;credentials: true (CORS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#333;fontSize=9;fontStyle=2;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="pwa" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Server -->
+        <mxCell id="api" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="160" y="270" width="1050" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="api-title" value="⚡ Express API Server (Node.js + TypeScript) — Port 3000" style="text;html=1;fontSize=14;fontStyle=1;align=center;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="275" width="500" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Middleware Pipeline -->
+        <mxCell id="mw-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="305" width="1010" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="mw-label" value="Middleware Pipeline:  express.json(10kb)  →  cookieParser()  →  cors({ credentials: true })  →  authenticate (JWT verify)  →  route handler" style="text;html=1;fontSize=10;align=center;fillColor=none;strokeColor=none;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="200" y="310" width="970" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Route boxes inside API -->
+        <mxCell id="r-auth" value="🔐 Auth&#xa;POST /auth/register&#xa;POST /auth/login&#xa;POST /auth/logout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="180" y="350" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r-groups" value="👥 Groups&#xa;POST /groups&#xa;GET  /groups&#xa;GET  /groups/:id&#xa;POST /groups/:id/members" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="330" y="350" width="165" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="r-expenses" value="💰 Expenses&#xa;POST /expenses&#xa;  → SELECT FOR UPDATE&#xa;  → compute balances&#xa;  → sync Neo4j&#xa;GET /groups/:id/balances" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="505" y="345" width="165" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="r-settle" value="📊 Settlement&#xa;GET /groups/:id/settlement&#xa;  → check Redis cache&#xa;  → Worker Thread algo&#xa;  → cache in Redis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="680" y="345" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="r-payments" value="💸 Payments&#xa;POST /payments&#xa;  → save to PostgreSQL&#xa;  → publish to RabbitMQ&#xa;  → instant response" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="850" y="345" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="r-explain" value="🤖 AI Explain&#xa;POST /explain/:groupId&#xa;  → Gemini agent loop&#xa;  → function calling&#xa;  → grounded explanation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="345" width="170" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Worker Thread -->
+        <mxCell id="worker" value="⚙️ Worker Thread (separate V8 isolate)&#xa;Greedy debt simplification: O(n log n)&#xa;Does NOT block the main event loop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;dashed=1;dashPattern=5 5;" vertex="1" parent="1">
+          <mxGeometry x="180" y="450" width="300" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ============ SECTION 2: ADD EXPENSE FLOW ============ -->
+        <mxCell id="s2-title" value="2. Add Expense Flow (the most complex write path)" style="text;html=1;fontSize=18;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="40" y="530" width="600" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;" vertex="1" parent="1">
+          <mxGeometry x="60" y="570" width="1200" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f1-step1" value="① Validate&#xa;input (Zod)&#xa;&#xa;description,&#xa;amount,&#xa;paidById,&#xa;splits[]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="590" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="f1-step2" value="② BEGIN TX&#xa;SELECT FOR UPDATE&#xa;on Group row&#xa;&#xa;🔒 Locks group —&#xa;no other write can&#xa;proceed until COMMIT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="580" width="170" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="f1-step3" value="③ INSERT&#xa;Expense +&#xa;ExpenseSplit rows&#xa;&#xa;④ Compute net&#xa;balances for all&#xa;group members" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="430" y="580" width="150" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="f1-step4" value="⑤ COMMIT&#xa;&#xa;🔓 Lock released&#xa;Other writes can&#xa;now proceed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="610" y="590" width="130" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="f1-step5" value="⑥ Sync Neo4j&#xa;(outside TX)&#xa;&#xa;MERGE OWES edges&#xa;from net balances&#xa;&#xa;(alice)-[:OWES&#xa;{amount:30}]-&gt;(bob)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="770" y="575" width="150" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="f1-step6" value="⑦ Invalidate&#xa;Redis cache&#xa;&#xa;DEL settlement:&#xa;{groupId}&#xa;&#xa;Forces recompute&#xa;on next request" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="950" y="575" width="140" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="f1-step7" value="⑧ Return&#xa;{ expense,&#xa;  balances }&#xa;to client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="590" width="110" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Flow arrows -->
+        <mxCell id="fa1" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f1-step1" target="f1-step2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa2" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f1-step2" target="f1-step3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa3" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f1-step3" target="f1-step4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa4" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f1-step4" target="f1-step5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa5" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f1-step5" target="f1-step6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa6" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f1-step6" target="f1-step7"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ============ SECTION 3: SETTLEMENT FLOW ============ -->
+        <mxCell id="s3-title" value="3. Settlement Plan Flow (read path with caching)" style="text;html=1;fontSize=18;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="40" y="820" width="600" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;" vertex="1" parent="1">
+          <mxGeometry x="60" y="860" width="1200" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f2-step1" value="① Check Redis&#xa;GET settlement:&#xa;{groupId}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="880" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f2-hit" value="Cache HIT&#xa;→ return instantly&#xa;(~0.1ms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="960" width="130" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="f2-step2" value="② Cache MISS&#xa;Read expenses +&#xa;splits from&#xa;PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="270" y="880" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f2-step3" value="③ Send to&#xa;Worker Thread&#xa;&#xa;Greedy matching:&#xa;sort creditors &amp;&#xa;debtors, pair&#xa;largest to largest&#xa;&#xa;Result: ≤ n-1&#xa;transfers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="870" width="155" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="f2-step4" value="④ Cache result&#xa;SET settlement:&#xa;{groupId} &quot;...&quot;&#xa;EX 300&#xa;(5 min TTL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="665" y="880" width="140" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f2-step5" value="⑤ Return&#xa;transfer list&#xa;to client&#xa;&#xa;[{from: Bob,&#xa;  to: Alice,&#xa;  amount: 18}]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="855" y="875" width="130" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fa2-1" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f2-step1" target="f2-step2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa2-1b" value="MISS" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=1;strokeColor=#999;fontSize=9;fontStyle=2;" edge="1" parent="1" source="f2-step1" target="f2-hit"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa2-2" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f2-step2" target="f2-step3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa2-3" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f2-step3" target="f2-step4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa2-4" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f2-step4" target="f2-step5"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ============ SECTION 4: PAYMENT + NOTIFICATION FLOW ============ -->
+        <mxCell id="s4-title" value="4. Payment + Push Notification Flow (async with dedup)" style="text;html=1;fontSize=18;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1080" width="600" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow3-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1120" width="1200" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- Producer side -->
+        <mxCell id="f3-label1" value="PRODUCER (API — same HTTP request)" style="text;html=1;fontSize=11;fontStyle=3;align=left;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1125" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step1" value="① Bob taps&#xa;&quot;Mark as Paid&quot;&#xa;€18 to Alice" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step2" value="② Save to&#xa;PostgreSQL&#xa;INSERT Payment&#xa;messageId = uuid()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="230" y="1150" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step3" value="③ Publish to&#xa;RabbitMQ&#xa;{paymentId,&#xa;messageId, ...}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1150" width="130" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step4" value="④ Return 201&#xa;to Bob&#xa;immediately ⚡" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="1150" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fa3-1" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step1" target="f3-step2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa3-2" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step2" target="f3-step3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa3-3" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step3" target="f3-step4"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- Consumer side -->
+        <mxCell id="f3-label2" value="CONSUMER (separate process — runs independently)" style="text;html=1;fontSize=11;fontStyle=3;align=left;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1240" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step5" value="⑤ Receive msg&#xa;from RabbitMQ&#xa;queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1265" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step6" value="⑥ Check Redis&#xa;GET notif:{msgId}&#xa;&#xa;EXISTS → skip&#xa;(already sent)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="1260" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step7" value="⑦ Look up&#xa;Alice's&#xa;PushSubscription&#xa;from PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1260" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step8" value="⑧ Send Web Push&#xa;via web-push lib&#xa;&#xa;Alice sees:&#xa;💸 Bob paid you €18" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="560" y="1255" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step9" value="⑨ SET Redis&#xa;notif:{msgId} = 1&#xa;EX 604800 (7 days)&#xa;&#xa;Prevents duplicate&#xa;on redelivery" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="740" y="1255" width="150" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="f3-step10" value="⑩ ACK msg&#xa;&#xa;RabbitMQ&#xa;deletes it" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1265" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Crash scenario -->
+        <mxCell id="f3-crash" value="⚠️ If crash between ⑧ and ⑩:&#xa;RabbitMQ redelivers → ⑥ catches it → no duplicate notification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="1270" width="190" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fa3-5" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step5" target="f3-step6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa3-6" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step6" target="f3-step7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa3-7" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step7" target="f3-step8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa3-8" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step8" target="f3-step9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="fa3-9" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#333;" edge="1" parent="1" source="f3-step9" target="f3-step10"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <!-- ============ SECTION 5: CQRS DATABASE PATTERN ============ -->
+        <mxCell id="s5-title" value="5. Database Architecture — CQRS Pattern" style="text;html=1;fontSize=18;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1440" width="600" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- PostgreSQL (Write Side) -->
+        <mxCell id="pg-write" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1490" width="350" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="pg-write-title" value="✏️ WRITE SIDE — PostgreSQL (Source of Truth)" style="text;html=1;fontSize=12;fontStyle=1;align=center;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="1495" width="330" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pg-tables" value="Tables:&#xa;• User (id, email, firstName, passwordHash)&#xa;• Group (id, name, version)&#xa;• GroupMember (userId, groupId)&#xa;• Expense (id, groupId, description, amount, paidById)&#xa;• ExpenseSplit (id, expenseId, userId, share)&#xa;• Payment (id, groupId, from, to, amount, messageId)&#xa;• PushSubscription (endpoint, keys)&#xa;&#xa;ACID transactions&#xa;SELECT FOR UPDATE (pessimistic locking)&#xa;Prisma ORM for type-safe queries" style="text;html=1;fontSize=10;align=left;fillColor=none;strokeColor=none;verticalAlign=top;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="130" y="1520" width="330" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- Sync Arrow -->
+        <mxCell id="sync-arrow" value="After each expense write:&#xa;recompute net balances →&#xa;MERGE OWES edges" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=3;strokeColor=#82b366;fontSize=10;fontStyle=1;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="pg-write" target="neo4j-read">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Neo4j (Read Side) -->
+        <mxCell id="neo4j-read" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="700" y="1490" width="350" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="neo4j-read-title" value="👁️ READ SIDE — Neo4j AuraDB (Graph Model)" style="text;html=1;fontSize=12;fontStyle=1;align=center;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="710" y="1495" width="330" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="neo4j-content" value="Nodes:&#xa;• (:User {id, email, firstName})&#xa;• (:Group {id, name})&#xa;&#xa;Relationships:&#xa;• (:User)-[:MEMBER_OF]-&gt;(:Group)&#xa;• (:User)-[:OWES {amount, groupId}]-&gt;(:User)&#xa;&#xa;Used for:&#xa;• Debt graph visualization (react-force-graph)&#xa;• shortestPath traversal (AI explainer)&#xa;• Multi-hop debt chain queries&#xa;  (impossible with SQL joins)" style="text;html=1;fontSize=10;align=left;fillColor=none;strokeColor=none;verticalAlign=top;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="710" y="1520" width="330" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- CQRS Why -->
+        <mxCell id="cqrs-why" value="WHY CQRS?&#xa;• Writes need ACID → PostgreSQL excels&#xa;• Reads need graph traversal → Neo4j excels (Cypher ≫ SQL for multi-hop)&#xa;• Each DB does what it's best at" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="300" y="1750" width="500" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ SECTION 6: DEPLOYMENT ============ -->
+        <mxCell id="s6-title" value="6. Deployment Architecture" style="text;html=1;fontSize=18;fontStyle=1;align=left;fillColor=none;strokeColor=none;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1850" width="400" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Local Dev -->
+        <mxCell id="local-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1900" width="500" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="local-title" value="🖥️ LOCAL DEVELOPMENT" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1905" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="local-docker" value="Docker Compose:&#xa;• PostgreSQL :5432&#xa;• RabbitMQ :5672/:15672&#xa;• Redis :6379" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1930" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="local-cloud" value="Cloud (free tiers):&#xa;• Neo4j AuraDB&#xa;• Gemini API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;align=left;spacingLeft=5;verticalAlign=top;spacingTop=3;" vertex="1" parent="1">
+          <mxGeometry x="280" y="1930" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Production -->
+        <mxCell id="prod-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1900" width="600" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-title" value="☁️ PRODUCTION" style="text;html=1;fontSize=12;fontStyle=1;align=left;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="630" y="1905" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-vercel" value="Vercel&#xa;PWA static" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="640" y="1940" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-render" value="Render&#xa;API server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="730" y="1940" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-neon" value="Neon&#xa;PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="820" y="1940" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-upstash" value="Upstash&#xa;Redis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="910" y="1940" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-cloudamqp" value="CloudAMQP&#xa;RabbitMQ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="1940" width="80" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-aura" value="AuraDB&#xa;Neo4j" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="1940" width="80" height="50" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

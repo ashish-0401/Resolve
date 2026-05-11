@@ -1,0 +1,169 @@
+<mxfile host="app.diagrams.net" modified="2026-05-11T10:00:00.000Z" agent="VS Code" version="21.0.0" type="device">
+  <diagram id="interview-hld" name="Interview HLD">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="RESOLVE — High-Level Architecture (Interview)" style="text;html=1;fontSize=22;fontStyle=1;align=center;fillColor=none;strokeColor=none;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- CLIENT (React PWA) -->
+        <mxCell id="pwa-group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="370" y="80" width="560" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="pwa-title" value="📱 React PWA (Vite + Service Worker)" style="text;html=1;fontSize=14;fontStyle=1;align=center;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="450" y="85" width="400" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="pwa-groups" value="Groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="385" y="115" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pwa-expenses" value="Expenses" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="475" y="115" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pwa-balances" value="Balances" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="565" y="115" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pwa-graph" value="Graph" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="655" y="115" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pwa-settle" value="Settle" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="745" y="115" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pwa-explain" value="AI Explain" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="835" y="115" width="80" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow: PWA → API -->
+        <mxCell id="arrow-pwa-api" value="HTTPS + JWT Cookie" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontSize=11;fontStyle=2;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1" source="pwa-group" target="api-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- EXPRESS API -->
+        <mxCell id="api-group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="250" y="240" width="800" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="api-title" value="⚡ Express API (Node.js + TypeScript)" style="text;html=1;fontSize=14;fontStyle=1;align=center;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="430" y="245" width="440" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- API Routes -->
+        <mxCell id="api-auth" value="🔐 Auth&#xa;register / login&#xa;bcrypt + JWT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="270" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api-groups" value="👥 Groups&#xa;CRUD + members&#xa;authorization" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api-expenses" value="💰 Expenses&#xa;pessimistic lock&#xa;FOR UPDATE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api-payments" value="💸 Payments&#xa;mark paid →&#xa;publish to MQ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="660" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api-explain" value="🤖 AI Explain&#xa;Gemini agent&#xa;function calling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="790" y="280" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Worker Thread -->
+        <mxCell id="worker" value="⚙️ Worker Thread&#xa;Debt Simplification&#xa;(greedy algorithm, O(n log n))" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="270" y="360" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="neo4j-sync" value="🔄 Neo4j Sync&#xa;Upsert OWES edges after&#xa;each expense (CQRS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;align=center;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="360" width="220" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ========== DATA STORES ========== -->
+
+        <!-- PostgreSQL -->
+        <mxCell id="postgres" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="530" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="postgres-label" value="🐘 PostgreSQL&#xa;&#xa;Source of Truth&#xa;Users, Groups,&#xa;Expenses, Payments&#xa;PushSubscriptions" style="text;html=1;fontSize=10;align=center;fillColor=none;strokeColor=none;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="125" y="540" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Redis -->
+        <mxCell id="redis" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="340" y="530" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="redis-label" value="⚡ Redis&#xa;&#xa;Cache:&#xa;• Settlement plan&#xa;• Message dedup&#xa;(TTL-based expiry)" style="text;html=1;fontSize=10;align=center;fillColor=none;strokeColor=none;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="345" y="540" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Neo4j -->
+        <mxCell id="neo4j" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="560" y="530" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="neo4j-label" value="🕸️ Neo4j (AuraDB)&#xa;&#xa;Read Model (CQRS)&#xa;(:User)-[:OWES]→(:User)&#xa;Graph traversal&#xa;Debt visualization" style="text;html=1;fontSize=10;align=center;fillColor=none;strokeColor=none;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="565" y="540" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- RabbitMQ -->
+        <mxCell id="rabbitmq" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="780" y="530" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="rabbitmq-label" value="🐰 RabbitMQ&#xa;&#xa;Message Queue&#xa;Payment events →&#xa;Push notifications&#xa;At-least-once delivery" style="text;html=1;fontSize=10;align=center;fillColor=none;strokeColor=none;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="785" y="540" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Gemini -->
+        <mxCell id="gemini" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="530" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="gemini-label" value="🤖 Gemini API&#xa;&#xa;AI Agent&#xa;Function calling&#xa;Settlement explainer&#xa;Grounded in real data" style="text;html=1;fontSize=10;align=center;fillColor=none;strokeColor=none;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1005" y="540" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Notification Consumer -->
+        <mxCell id="consumer" value="📬 Notification Consumer&#xa;(separate process)&#xa;&#xa;Reads from RabbitMQ →&#xa;Sends Web Push to user&#xa;Redis dedup prevents duplicates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="780" y="710" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows: API → Data Stores -->
+        <mxCell id="a-api-pg" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#6c8ebf;entryX=0.5;entryY=0;exitX=0.15;exitY=1;" edge="1" parent="1" source="api-group" target="postgres">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a-api-redis" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#b85450;entryX=0.5;entryY=0;exitX=0.35;exitY=1;" edge="1" parent="1" source="api-group" target="redis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a-api-neo4j" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#82b366;entryX=0.5;entryY=0;exitX=0.55;exitY=1;" edge="1" parent="1" source="api-group" target="neo4j">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a-api-rmq" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#d6b656;entryX=0.5;entryY=0;exitX=0.75;exitY=1;" edge="1" parent="1" source="api-group" target="rabbitmq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a-api-gemini" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#9673a6;entryX=0.5;entryY=0;exitX=0.95;exitY=1;" edge="1" parent="1" source="api-group" target="gemini">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow: RabbitMQ → Consumer -->
+        <mxCell id="a-rmq-consumer" value="delivers&#xa;messages" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#d6b656;fontSize=9;fontStyle=2;" edge="1" parent="1" source="rabbitmq" target="consumer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="30" y="730" width="580" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Key Design Decisions" style="text;html=1;fontSize=12;fontStyle=1;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="735" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-1" value="• Pessimistic locking (FOR UPDATE) — high contention during group trips" style="text;html=1;fontSize=10;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="755" width="400" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-2" value="• Worker thread — CPU-bound algorithm must not block event loop" style="text;html=1;fontSize=10;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="770" width="400" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-3" value="• CQRS — PostgreSQL for writes (ACID), Neo4j for graph reads" style="text;html=1;fontSize=10;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="785" width="400" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-4" value="• httpOnly cookies — JWT invisible to JavaScript (XSS protection)" style="text;html=1;fontSize=10;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="800" width="400" height="15" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

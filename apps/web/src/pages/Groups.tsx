@@ -14,6 +14,7 @@ export function GroupsPage() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
   const [creating, setCreating] = useState(false);
@@ -22,7 +23,10 @@ export function GroupsPage() {
     api.getGroups().then(({ groups }) => {
       setGroups(groups);
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      setFetchError(true);
+      setLoading(false);
+    });
   }, []);
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -81,7 +85,15 @@ export function GroupsPage() {
 
       {/* Groups list */}
       {loading ? (
-        <div className="text-center pt-12 text-zinc-500">Loading...</div>
+        <div className="text-center pt-12 text-zinc-500">Loading your trips...</div>
+      ) : fetchError ? (
+        <div className="text-center pt-12">
+          <p className="text-red-400 font-semibold">Could not load trips</p>
+          <p className="text-zinc-500 text-sm mt-1">Check if the API server is running on port 3000</p>
+          <Button variant="secondary" className="mt-4" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </div>
       ) : groups.length === 0 ? (
         <div className="text-center pt-16">
           <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>

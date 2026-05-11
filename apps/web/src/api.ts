@@ -10,7 +10,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     },
   });
 
-  const data = await res.json();
+  const text = await res.text();
+
+  let data: any;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error('Server returned invalid response. Check if the API is running.');
+  }
 
   if (!res.ok) {
     throw new Error(data.error || `Request failed: ${res.status}`);
